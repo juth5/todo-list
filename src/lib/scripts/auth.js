@@ -15,8 +15,8 @@ export async function signUp(email, password, name) {
       email: email,
       createdAt: new Date().toISOString(),
       uid: user.uid,
-      displayName: name,
-    })
+      //displayName: name,
+    });
     return userCredential.user;
   } catch (error) {
     console.error("Error signing up:", error);

@@ -20,7 +20,7 @@
 	
 		let submit = (e) => {
 			e.preventDefault();
-			signUp(email, password, name);
+			signUp(email, password);
 		};
 
 		let signIn = (e) => {
@@ -98,8 +98,6 @@
 	div.f.fh.h100vh
 		div.f.fm
 			form.border(on:submit!='{(e) => submit(e)}')
-				div 名前
-				input(bind:value='{name}').input
 				div email
 				input(type='email', bind:value='{email}').input
 				div password
@@ -127,7 +125,7 @@
 
 			
 		+if('$currentUser')
-			div {$currentUser.displayName}
+			div {$currentUser.uid}
 		
 
 
