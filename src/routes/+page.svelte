@@ -4,6 +4,8 @@
 	import { currentUser } from '$lib/scripts/authStore';
 	import { firebaseDb } from '$lib/scripts/firebase';
   import { page } from "$app/stores";
+	import { onMount } from 'svelte';
+
 
 	import Content from './Content.svelte';
 	import Title from '../components/items/Title.svelte';
@@ -15,6 +17,34 @@
 	$: {
 		console.log($currentUser,'currentUser')
 	}
+
+	onMount( async () => {
+		try {
+				if ($currentUser) {
+					const userId = $currentUser.uid;
+					const diaryCollection = collection(firebaseDb, "diary");
+					const q = query(diaryCollection, where("uid", "==", userId));
+					const querySnapshot = await getDocs(q);
+
+					querySnapshot.forEach((doc) => {
+						todoList.push({ id: doc.id, ...doc.data() }); // ドキュメントIDを含める
+					});
+
+					todoList = todoList.map((list) => {
+						return {
+							data: list,
+							isChecked: false,
+						}
+					});
+
+					console.log(todoList,'hoge')
+				}
+			}
+			catch(e) {
+				console.error(e);
+			}
+	});
+
 	
 	let insertContent = async (e) => {
 			e.preventDefault();
@@ -80,21 +110,26 @@
 </svelte:head>
 <template lang='pug'>
 	div.mt100
-	+if('$currentUser')
-		div.text-center TODO List
-		form(on:submit!='{(e) => insertContent(e)}')
-				div 今日やること
-				input.input(type='text', bind:value='{text}')
-				button.button button
-		+each('todoList as list')
-			div.f.fm
-				input.mr12(type='checkbox', bind:checked='{list.isChecked}')
-				li {list.data.content}
-		button.button(on:click!='{() => saveTodoList()}') deleteData
-		button.button(on:click!='{() => getData()}') getData
+	div.container-1240
+		+if('$currentUser')
+			h1.text-center.mb40 TODO List
+			form.mb50(on:submit!='{(e) => insertContent(e)}')
+					h2.mb12 今日やること(TODO)
+					div.f.fm
+						input.input.border.w-full.mr24(bind:value='{text}')
+						button.button.flex-fixed.w128 登録
+			div.mb30
+				+each('todoList as list, index')
+					div.f.fm
+						div.w10.mr12 {index + 1}.
+						input.w20.mr12(type='checkbox', bind:checked='{list.isChecked}')
+						li {list.data.content}
+			+if('todoList.length')
+				div
+					button.button(on:click!='{() => saveTodoList()}') 登録
 
-	+if('!$currentUser')
-		a(href='/login') ログインページへ
+		+if('!$currentUser')
+			a(href='/login') ログインページへ
 
 
 
