@@ -30,7 +30,14 @@ body {
 		),
 		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%); */
 }
-
+ul {
+	list-style: none; /* リストの点を非表示にする */
+	padding: 0; /* デフォルトの余白を削除 */
+	margin: 0; /* デフォルトのマージンを削除 */
+}
+li {
+	list-style: none; /* リストの点を非表示にする */
+}
 h1,
 h2,
 p {
