@@ -39,7 +39,7 @@
         div.mb24
           div パスワード
           input.input(type='password', bind:value='{password}', required)
-        button.button  新規作成
+        button.button.bg-light-green  新規作成
     div
       form.pl100.pr100.pb100.pt50.rounded-10.border(on:submit!='{(e) => login(e)}')
         div.text-center.mb50 既にアカウントをお持ちの方
@@ -49,7 +49,7 @@
         div.mb24
           div パスワード
           input.input(type='password', bind:value='{loginPassword}', required)
-        button.button  ログイン
+        button.button.bg-greenyellow  ログイン
 
 
 

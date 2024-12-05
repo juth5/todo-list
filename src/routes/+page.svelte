@@ -143,7 +143,7 @@
 						div
 							div.mb12 終了したtodoは☑️！完了を押して消そう👍
 							div.f.fr
-								button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 完了
+								button.button.rounded-20.w128.bg-greenyellow.text-white(on:click!='{() => saveTodoList()}') 完了
 
 		+if('!$currentUser')
 			div.f.fh.s-full
