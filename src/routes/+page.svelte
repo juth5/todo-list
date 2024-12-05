@@ -1,39 +1,117 @@
 <script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+	import { collection, addDoc, updateDoc, doc, query, getDocs, where, deleteDoc } from "firebase/firestore"; 
+	import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
+	import { currentUser, authUser } from '$lib/scripts/authStore';
+	import { firebaseDb } from '$lib/scripts/firebase';
+  import { page } from "$app/stores";
+	import { onMount } from 'svelte';
+
 	import Content from './Content.svelte';
 	import Title from '../components/items/Title.svelte';
 	import Plan from '../components/items/Plan.svelte';
 	import config from '$lib/scripts/config';
-	
-	
+  import AuthModal from "../lib/modal/AuthModal.svelte";
 
-	let contentData = [
-		{
-			text: 'HTML,CSS',
-			description: 'トレースによるトレンドのレイアウトを学ぶ',
-			image1: '/html1.png',
-			image2: '/html3.png',
-			borderColor: 'orange',
-		},
-		{
-			text: 'JavaScript',
-			description: '基本から実践までを学ぶ',
-			image1: '/js1.png',
-			image2: '/js2.png',
-			borderColor: 'yellow',
-		},
-		{
-			text: 'Git (バージョン管理)',
-			description: '共同開発の方法を学ぶ',
-			image1: '/git1.png',
-			image2: '/git2.png',
-			borderColor: 'red',
-		},
-	];
+	let isOpenModal = false;
+	let todoList = [];
+	let text = '';
+	let inputElement = {};
 
+	$: {
+		console.log($currentUser,'currentUser');
+		console.log($authUser, 'authUser')
+	}
+
+	onMount( async () => {
+		try {
+				if ($currentUser) {
+
+					const userId = $currentUser.uid;
+					const diaryCollection = collection(firebaseDb, "diary");
+					const q = query(diaryCollection, where("uid", "==", userId));
+					const querySnapshot = await getDocs(q);
+
+					querySnapshot.forEach((doc) => {
+						todoList.push({ id: doc.id, ...doc.data() }); // ドキュメントIDを含める
+					});
+
+					todoList = todoList.map((list) => {
+						return {
+							data: list,
+							isChecked: false,
+						}
+					});
+					if ($authUser && !$authUser.display_name) {
+						isOpenModal = true;
+					}
+				}
+			}
+			catch(e) {
+				console.error(e);
+			}
+	});
+
+  let closeModal = () => {
+    isOpenModal = false;
+  };
 	
+	let insertContent = async (e) => {
+			e.preventDefault();
+			const docRef = await addDoc(collection(firebaseDb, "diary"), {
+				content: text,
+				uid: $currentUser.uid,
+				created_at: new Date()
+			});
+
+			//登録したデータでないとエラーがでる
+			let content = {};
+			todoList.push({ data: { content: text, id: docRef.id }, isChecked: false });
+			todoList = todoList;
+			text = '';
+			inputElement.focus();
+		};
+
+		let saveTodoList = async () => {
+			let deleteData = todoList.filter(list => list.isChecked);
+
+			let promises = deleteData.map((data) => {
+				let ref = doc(firebaseDb, "diary", data.data.id);
+				return deleteDoc(ref);
+			});
+			await Promise.all(promises);
+			todoList = todoList.filter(list => !list.isChecked);
+
+		};
+
+		let getData = async () => {
+			try {
+				if ($currentUser) {
+					const userId = $currentUser.uid;
+					
+					const diaryCollection = collection(firebaseDb, "diary");
+					const q = query(diaryCollection, where("uid", "==", userId));
+					const querySnapshot = await getDocs(q);
+
+					querySnapshot.forEach((doc) => {
+						todoList.push({ id: doc.id, ...doc.data() }); // ドキュメントIDを含める
+				});
+
+				todoList = todoList.map((list) => {
+					return {
+						data: list,
+						isChecked: false,
+					}
+				});
+
+				console.log(todoList,'hoge')
+
+				}
+			}
+			catch(e) {
+				console.error(e);
+			}
+		};
+
 </script>
 
 <svelte:head>
@@ -41,65 +119,39 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 <template lang='pug'>
-	div.relative.h80vh.s-h60vh
-		div.absolute.trbl0.s-full
-			img.object-fit-cover.s-full.filter(src='/top.png')
-		div.absolute.trbl0.z10.f.fh
-			h1.text-white
-				div.fs48.s-fs24 プログラミングを学ぼう
-				div.fs28.s-fs14 わかりやすく実践的なカリキュラム
-		div.z10.absolute.b100.l0.r0.f.fc.s-b40
-			a.w300.inline-block.py14.rounded-full.bg-orange.text-center.border.text-white(href='{config.formUrl}', target='blank') お問い合わせ
+	div.container-1240.h100vh.px20
+		+if('$currentUser')
+				div.mt100
+				+if('$authUser')
+					h3.text-center ようこそ {$authUser.display_name} さん
+				h1.text-center.mb40 TODO List
+				form.mb50(on:submit!='{(e) => insertContent(e)}')
+					h3.mb12 TODO
+					div.f.fm.s-flex-column
+						input.input.border.w-full.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
+						div.f.s-fr.s-w-full
+							button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
+				h3.mb12 TODO 一覧
+				div.mb30
+					+each('todoList as list, index')
+						div.f.fm
+							div.w10.mr12 {index + 1}.
+							input.w20.mr12(type='checkbox', bind:checked='{list.isChecked}')
+							li {list.data.content}
+				+if('todoList.length')
+					div.f.fr
+						div
+							div.mb12 終了したtodoは☑️！完了を押して消そう👍
+							div.f.fr
+								button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 完了
 
-	div.w-full.text-center
-
-
-		div.py50.s-px16
-			div.mb50.s-mb40
-				Title(title='サービスへの想い')
-			div.container-1024.text-left.mb20
-				p 約3年前、私は教員からプログラマーへ転職しました。当初はURLの意味も、API、DB（データベース）、サーバーの基本概念すらわからない状態からのスタートでした。
-					br
-					|さらに、私は理解力が遅い方で、Webプログラマーとして業務をこなせるようになるまでには非常に多くの時間を要しました。
-					br
-					br
-					|そんな経験を通じて、プログラマーに挑戦する新入社員や、すでに何らかの形で開発に携わっている方、プログラマーではないけれど開発業務に関わる方、またITやプログラミングに興味を持つ方々が、途中で挫折することなく学習を進め、人生をより良い方向に変えていけるよう、サポートしたいと思い、このサービスを立ち上げました。
-					|もう無理かもなぁ。と諦めそうな方、自分にはできないと思っている方の最初の苦しい段階を支えていきます。
-					br
-					br
-					|本サービスでは、Web開発に必要な最低限の知識を身に付けることを目的としています。特に、フロントエンドの知識はもちろん、私が特に苦労したサーバーサイドやDB（データベース）、APIに関する理解が深まるように、プログラムを工夫してご提供しています。
-		
-		
-		div.py50.bg-dark-green.text-white
-			div.mb50.s-mb40
-				Title(title='カリキュラム', color='white')
-			+each('contentData as data')
-				div.f.fc.mb50.s-mb50.s-px16
-					Content(item='{data}')
-			div
-				a.w300.inline-block.py14.bg-light-green.rounded-full.text-white(href='/curriculum') 詳しく見る
-				
-		div.pb40.pt40.mb30
-			div.mb50.s-mb40
-				Title(title='プラン',)
-			div.f.fc.w-full.mb50
-				div.w500.s-px20
-					Plan
-			div
-				a.w300.inline-block.py14.rounded-full.bg-light-green.border.text-white(href='/plan') 詳しく見る
-		div.bg-dark-green.text-white.py50
-			div.mb50.s-mb40
-				Title(title='お問い合わせ')
-			div.s-px16.mb50 見学や無料体験も行っております。
-				br
-				|お気軽にご連絡ください。
-			a.w300.inline-block.py14.rounded-full.bg-orange.border.text-white(href='{config.formUrl}', target='blank') お問い合わせ
-
-
+		+if('!$currentUser')
+			div.f.fh.s-full
+				a.w256.rounded-30.bg-light-green.p10.text-center.text-white(href='/login') ログインページへ
+		+if('isOpenModal')
+			AuthModal(show='{isOpenModal}', onClose='{closeModal}')
 </template>
 <style>
-	.filter {
-		filter: brightness(0.6);
-	}
+
 </style>
 

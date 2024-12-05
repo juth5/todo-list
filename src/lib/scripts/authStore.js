@@ -3,21 +3,52 @@ import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { firebaseDb } from '$lib/scripts/firebase';
 import { collection, addDoc, updateDoc, doc, query, getDocs, where, setDoc, getDoc } from "firebase/firestore"; 
+import { browser } from '$app/environment';
 
 export const currentUser = writable(undefined);
 export const authUser = writable(null);
 
-onAuthStateChanged(auth, async (firebaseUser) => {
-  try {
-    if (firebaseUser) {
-      currentUser.set(firebaseUser);
-    }
-    else {
-      currentUser.set(null);
-    }
+const authPromise = new Promise((resolve, reject) => {
+  if (!browser) {
+    resolve();
+    return ;
   }
-  catch (error) {
-    console.error("Error fetching user data:");
-  }
+  
+  onAuthStateChanged(auth, async (firebaseUser) => {
+    
+    try {
+      if (firebaseUser) {
+        currentUser.set(firebaseUser);
+        const userDoc = doc(firebaseDb, "users", firebaseUser.uid);
+
+        const docSnapshot = await getDoc(userDoc);
+        if (docSnapshot.exists()) {
+          let user_data = docSnapshot.data();
+
+          authUser.set(user_data);
+        }
+        else {
+          let user_data = {
+            createdAt: new Date().toISOString(),
+            uid: firebaseUser.uid,
+          };
+          await setDoc(doc(firebaseDb, "users", firebaseUser.uid), user_data);
+          authUser.set(user_data);
+        }
+      }
+      else {
+        currentUser.set(null);
+      }
+      resolve();
+    }
+    catch (error) {
+      console.error(error);
+      reject();
+    }
+  });
 });
 
+
+export const awaitAuthReady = () => {
+  return authPromise;
+};
