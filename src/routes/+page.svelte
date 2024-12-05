@@ -1,26 +1,31 @@
 <script>
 	import { collection, addDoc, updateDoc, doc, query, getDocs, where, deleteDoc } from "firebase/firestore"; 
 	import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
-	import { currentUser } from '$lib/scripts/authStore';
+	import { currentUser, authUser } from '$lib/scripts/authStore';
 	import { firebaseDb } from '$lib/scripts/firebase';
   import { page } from "$app/stores";
 	import { onMount } from 'svelte';
-
 
 	import Content from './Content.svelte';
 	import Title from '../components/items/Title.svelte';
 	import Plan from '../components/items/Plan.svelte';
 	import config from '$lib/scripts/config';
+  import AuthModal from "../lib/modal/AuthModal.svelte";
+
+	let isOpenModal = false;
 	let todoList = [];
 	let text = '';
+	let inputElement = {};
 
 	$: {
-		console.log($currentUser,'currentUser')
+		console.log($currentUser,'currentUser');
+		console.log($authUser, 'authUser')
 	}
 
 	onMount( async () => {
 		try {
 				if ($currentUser) {
+
 					const userId = $currentUser.uid;
 					const diaryCollection = collection(firebaseDb, "diary");
 					const q = query(diaryCollection, where("uid", "==", userId));
@@ -36,8 +41,9 @@
 							isChecked: false,
 						}
 					});
-
-					console.log(todoList,'hoge')
+					if ($authUser && !$authUser.display_name) {
+						isOpenModal = true;
+					}
 				}
 			}
 			catch(e) {
@@ -45,10 +51,12 @@
 			}
 	});
 
+  let closeModal = () => {
+    isOpenModal = false;
+  };
 	
 	let insertContent = async (e) => {
 			e.preventDefault();
-
 			const docRef = await addDoc(collection(firebaseDb, "diary"), {
 				content: text,
 				uid: $currentUser.uid,
@@ -60,6 +68,7 @@
 			todoList.push({ data: { content: text, id: docRef.id }, isChecked: false });
 			todoList = todoList;
 			text = '';
+			inputElement.focus();
 		};
 
 		let saveTodoList = async () => {
@@ -78,6 +87,7 @@
 			try {
 				if ($currentUser) {
 					const userId = $currentUser.uid;
+					
 					const diaryCollection = collection(firebaseDb, "diary");
 					const q = query(diaryCollection, where("uid", "==", userId));
 					const querySnapshot = await getDocs(q);
@@ -109,32 +119,37 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 <template lang='pug'>
-	div.mt100
-	div.container-1240
+	div.container-1240.h100vh.px20
 		+if('$currentUser')
-			h1.text-center.mb40 TODO List
-			form.mb50(on:submit!='{(e) => insertContent(e)}')
-					h2.mb12 今日やること(TODO)
-					div.f.fm
-						input.input.border.w-full.mr24(bind:value='{text}')
-						button.button.flex-fixed.w128 登録
-			div.mb30
-				+each('todoList as list, index')
-					div.f.fm
-						div.w10.mr12 {index + 1}.
-						input.w20.mr12(type='checkbox', bind:checked='{list.isChecked}')
-						li {list.data.content}
-			+if('todoList.length')
-				div
-					button.button(on:click!='{() => saveTodoList()}') 登録
+				div.mt100
+				+if('$authUser')
+					h3.text-center ようこそ {$authUser.display_name} さん
+				h1.text-center.mb40 TODO List
+				form.mb50(on:submit!='{(e) => insertContent(e)}')
+					h3.mb12 TODO
+					div.f.fm.s-flex-column
+						input.input.border.w-full.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
+						div.f.s-fr.s-w-full
+							button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
+				h3.mb12 TODO 一覧
+				div.mb30
+					+each('todoList as list, index')
+						div.f.fm
+							div.w10.mr12 {index + 1}.
+							input.w20.mr12(type='checkbox', bind:checked='{list.isChecked}')
+							li {list.data.content}
+				+if('todoList.length')
+					div.f.fr
+						div
+							div.mb12 終了したtodoは☑️！完了を押して消そう👍
+							div.f.fr
+								button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 完了
 
 		+if('!$currentUser')
-			a(href='/login') ログインページへ
-
-
-
-
-
+			div.f.fh.s-full
+				a.w256.rounded-30.bg-light-green.p10.text-center.text-white(href='/login') ログインページへ
+		+if('isOpenModal')
+			AuthModal(show='{isOpenModal}', onClose='{closeModal}')
 </template>
 <style>
 

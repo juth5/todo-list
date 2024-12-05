@@ -2,6 +2,8 @@
 	import { currentUser } from '$lib/scripts/authStore';
   import { collection, addDoc, updateDoc, doc, query, getDocs, where, setDoc } from "firebase/firestore";
   import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
+  import { goto } from '$app/navigation';
+
 
 	let email = '';
   let password = '';
@@ -14,9 +16,10 @@
     signUp(email, password);
   };
 
-  let login = (e) => {
+  let login = async (e) => {
     e.preventDefault();
-    logIn(loginEmail, loginPassword);
+    await logIn(loginEmail, loginPassword);
+    goto('/');
   };
 
 </script>

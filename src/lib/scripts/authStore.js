@@ -15,9 +15,26 @@ const authPromise = new Promise((resolve, reject) => {
   }
   
   onAuthStateChanged(auth, async (firebaseUser) => {
+    
     try {
       if (firebaseUser) {
         currentUser.set(firebaseUser);
+        const userDoc = doc(firebaseDb, "users", firebaseUser.uid);
+
+        const docSnapshot = await getDoc(userDoc);
+        if (docSnapshot.exists()) {
+          let user_data = docSnapshot.data();
+
+          authUser.set(user_data);
+        }
+        else {
+          let user_data = {
+            createdAt: new Date().toISOString(),
+            uid: firebaseUser.uid,
+          };
+          await setDoc(doc(firebaseDb, "users", firebaseUser.uid), user_data);
+          authUser.set(user_data);
+        }
       }
       else {
         currentUser.set(null);
@@ -25,7 +42,7 @@ const authPromise = new Promise((resolve, reject) => {
       resolve();
     }
     catch (error) {
-      console.error("Error fetching user data:");
+      console.error(error);
       reject();
     }
   });
