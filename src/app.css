@@ -135,5 +135,5 @@ button:focus:not(:focus-visible) {
 }
 
 .bg-light-green  {
-	background-color: #00b379;
+	background-color: #00b379 !important;
 }
