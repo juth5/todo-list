@@ -44,7 +44,7 @@
 					});
 					const isReady = await awaitAuthReady();
 
-					if (isReady && $authUser && !$authUser.display_name) {
+					if (awaitAuthReady() && $authUser && !$authUser.display_name) {
 						isOpenModal = true;
 					}
 				}
