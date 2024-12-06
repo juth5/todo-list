@@ -23,12 +23,18 @@ let registerUserName = async () => {
       return;
     }
 
+    let user_data = {
+      uid: $currentUser.uid,
+      display_name: nameValue,
+    };
+
     // Firestoreにデータを保存
     await setDoc(doc(firebaseDb, "users", $currentUser.uid), {
       display_name: nameValue,
       createdAt: serverTimestamp(),
     });
 
+    authUser.set(user_data);
     console.log("ユーザー名が登録されました");
     nameValue = ""; // 入力フィールドをリセット
     onClose();

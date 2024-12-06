@@ -29,27 +29,29 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 <template lang='pug'>
-  div.f.fh.mt100
-    div.mr20
-      form.pl100.pr100.pb100.pt50.rounded-10.border(on:submit!='{(e) => submit(e)}')
-        div.text-center.mb50 初めての方
+  div.container-1240.f.fh.mt100.s-flex-column.s-px20
+    div.w400.mr20.s-w-full.s-mr0.s-mb20
+      form.p20.pb100.pt50.rounded-10.border(on:submit!='{(e) => submit(e)}')
+        div.text-center.bold.fs20.mb50 初めての方
         div.mb24
-          div メールアドレス
-          input.input(type='email', bind:value='{email}', required)
+          div.mb6 メールアドレス
+          input.input.w256(type='email', bind:value='{email}', required)
+        div.mb40
+          div.mb6 パスワード
+          input.input.w256(type='password', bind:value='{password}', required)
+        div.f.fc
+          button.button.bg-light-green.text-white.rounded-30.w256.h40  新規作成
+    div.w400.s-w-full
+      form.p20.pb100.pt50.rounded-10.border(on:submit!='{(e) => login(e)}')
+        div.text-center.bold.fs20.mb50 既にアカウントをお持ちの方
         div.mb24
-          div パスワード
-          input.input(type='password', bind:value='{password}', required)
-        button.button.bg-light-green  新規作成
-    div
-      form.pl100.pr100.pb100.pt50.rounded-10.border(on:submit!='{(e) => login(e)}')
-        div.text-center.mb50 既にアカウントをお持ちの方
-        div.mb24
-          div メールアドレス
-          input.input(type='email', bind:value='{loginEmail}', required)
-        div.mb24
-          div パスワード
-          input.input(type='password', bind:value='{loginPassword}', required)
-        button.button.bg-greenyellow  ログイン
+          div.mb6 メールアドレス
+          input.input.w256(type='email', bind:value='{loginEmail}', required)
+        div.mb40
+          div.mb6 パスワード
+          input.input.w256(type='password', bind:value='{loginPassword}', required)
+        div.f.fc
+          button.button.bg-light-green.text-white.rounded-30.w256.h40  ログイン
 
 
 
