@@ -11,9 +11,10 @@
   let loginEmail = '';
   let loginPassword = '';
 
-  let submit = (e) => {
+  let signIn = async (e) => {
     e.preventDefault();
-    signUp(email, password);
+    await signUp(email, password);
+    goto('/');
   };
 
   let login = async (e) => {
@@ -31,14 +32,14 @@
 <template lang='pug'>
   div.container-1240.f.fh.mt100.s-flex-column.s-px20
     div.w400.mr20.s-w-full.s-mr0.s-mb20
-      form.p20.pb100.pt50.rounded-10.border(on:submit!='{(e) => submit(e)}')
+      form.p20.pb100.pt50.rounded-10.border(on:submit!='{(e) => signIn(e)}')
         div.text-center.bold.fs20.mb50 初めての方
         div.mb24
           div.mb6 メールアドレス
-          input.input.w256(type='email', bind:value='{email}', required)
+          input.input.w-full.px20.rounded-30(type='email', bind:value='{email}', required)
         div.mb40
           div.mb6 パスワード
-          input.input.w256(type='password', bind:value='{password}', required)
+          input.input.w-full.px20.rounded-30(type='password', bind:value='{password}', required)
         div.f.fc
           button.button.bg-light-green.text-white.rounded-30.w256.h40  新規作成
     div.w400.s-w-full
@@ -46,10 +47,10 @@
         div.text-center.bold.fs20.mb50 既にアカウントをお持ちの方
         div.mb24
           div.mb6 メールアドレス
-          input.input.w256(type='email', bind:value='{loginEmail}', required)
+          input.input.w-full.px20.rounded-30(type='email', bind:value='{loginEmail}', required)
         div.mb40
           div.mb6 パスワード
-          input.input.w256(type='password', bind:value='{loginPassword}', required)
+          input.input.w-full.px20.rounded-30(type='password', bind:value='{loginPassword}', required)
         div.f.fc
           button.button.bg-light-green.text-white.rounded-30.w256.h40  ログイン
 
