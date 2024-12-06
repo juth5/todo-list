@@ -5,6 +5,7 @@
 	import { firebaseDb } from '$lib/scripts/firebase';
   import { page } from "$app/stores";
 	import { onMount } from 'svelte';
+	import { awaitAuthReady } from "../lib/scripts/authStore"
 
 	import Content from './Content.svelte';
 	import Title from '../components/items/Title.svelte';
@@ -41,7 +42,9 @@
 							isChecked: false,
 						}
 					});
-					if ($authUser && !$authUser.display_name) {
+					const isReady = await awaitAuthReady();
+
+					if (isReady && $authUser && !$authUser.display_name) {
 						isOpenModal = true;
 					}
 				}
