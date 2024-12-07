@@ -12,11 +12,14 @@
 	import Plan from '../components/items/Plan.svelte';
 	import config from '$lib/scripts/config';
   import AuthModal from "../lib/modal/AuthModal.svelte";
+	import LoadingModal from "../lib/modal/LoadingModal.svelte";
+	
 
 	let isOpenModal = false;
 	let todoList = [];
 	let text = '';
 	let inputElement = {};
+	let isLoading = false;
 
 	$: {
 		console.log($currentUser,'currentUser');
@@ -24,6 +27,7 @@
 	}
 
 	onMount( async () => {
+		isLoading = true;
 		try {
 				if ($currentUser) {
 
@@ -48,9 +52,11 @@
 						isOpenModal = true;
 					}
 				}
+				isLoading = false;
 			}
 			catch(e) {
 				console.error(e);
+				isLoading = false;
 			}
 	});
 
@@ -60,6 +66,7 @@
 	
 	let insertContent = async (e) => {
 			e.preventDefault();
+			if (!text) return ;
 			const docRef = await addDoc(collection(firebaseDb, "diary"), {
 				content: text,
 				uid: $currentUser.uid,
@@ -122,16 +129,18 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 <template lang='pug'>
-	div.container-1240.h100vh.px20
+	+if('isLoading')
+		LoadingModal(show='{isLoading}')
+	div.container-960.h100vh.px20
 		+if('$currentUser')
 				div.mt100
-				+if('$authUser')
+				+if('$authUser && $authUser.display_name')
 					h3.text-center ようこそ {$authUser.display_name} さん
 				h1.text-center.mb40 TODO List
 				form.mb50(on:submit!='{(e) => insertContent(e)}')
 					h3.mb12 TODO
 					div.f.fm.s-flex-column
-						input.input.border.w-full.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
+						input.input.border.w-full.rounded-30.px20.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
 						div.f.s-fr.s-w-full
 							button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
 				h3.mb12 TODO 一覧
@@ -146,7 +155,7 @@
 						div
 							div.mb12 終了したtodoは☑️！完了を押して消そう👍
 							div.f.fr
-								button.button.rounded-20.w128.bg-greenyellow.text-white(on:click!='{() => saveTodoList()}') 完了
+								button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 完了
 
 		+if('!$currentUser')
 			div.f.fh.s-full

@@ -5,13 +5,13 @@
 
   export let show = false;
   export let onClose = () => {};
-  export let text = '';
   let nameValue = '';
   $: {
     show;
   }
 
 let registerUserName = async () => {
+  if (!nameValue) return ;
   try {
     // currentUser と nameValue を検証
     if (!$currentUser || !$currentUser.uid) {
@@ -55,7 +55,7 @@ let registerUserName = async () => {
         h3.text-center.mb24 ユーザー名を登録しよう
         div.mb32
           div.mb8 ユーザー名
-          input.input.w256(type='text', bind:value='{nameValue}')
+          input.input.w-full.rounded-30.px20(type='text', bind:value='{nameValue}')
         div.f.fc
           button.button.rounded-20.w128.bg-light-green.text-white(on:click='{registerUserName}') 登録
 

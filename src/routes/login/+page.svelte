@@ -35,9 +35,9 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 <template lang='pug'>
-  div.container-1240.mt100
+  div.container-960.mt100
     div.f.fh.mb60.border-bottom.bw2.s-mb30
-      button.f.fm.h40.rounded-top-right-15.rounded-top-left-15.text-center.py4.px40.border-top.border-right.border-left.mr20(type='button', on:click!='{() => changeMode("signUp")}', class!="{currentMode === 'signUp' ? 'bg-light-green text-white': ''}") 新規作成
+      button.f.fm.h40.rounded-top-right-15.rounded-top-left-15.text-center.py4.px40.border-top.border-right.border-left.mr20(type='button', on:click!='{() => changeMode("signUp")}', class!="{currentMode === 'signUp' ? 'bg-light-green text-white': ''}") 新規登録
       button.f.fm.h40.rounded-top-right-15.rounded-top-left-15.text-center.py4.px40.border-top.border-right.border-left(type='button', on:click!='{() => changeMode("logIn")}', class!="{currentMode === 'logIn' ? 'bg-light-green text-white': ''}") ログイン
     div.f.fh.s-flex-column.s-px20
       +if('currentMode === "signUp"')
@@ -51,7 +51,7 @@
               div.mb6 パスワード
               input.input.w-full.px20.rounded-30(type='password', bind:value='{password}', required)
             div.f.fc
-              button.button.bg-light-green.text-white.rounded-30.w256.h40  新規作成
+              button.button.bg-light-green.text-white.rounded-30.w256.h40  新規登録
       +if('currentMode === "logIn"')
         div.w400.s-w-full
           form.p20.py50.rounded-10.border(on:submit!='{(e) => login(e)}')
