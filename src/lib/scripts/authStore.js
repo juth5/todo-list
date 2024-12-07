@@ -15,7 +15,6 @@ const authPromise = new Promise((resolve, reject) => {
   }
   
   onAuthStateChanged(auth, async (firebaseUser) => {
-    
     try {
       if (firebaseUser) {
         currentUser.set(firebaseUser);
