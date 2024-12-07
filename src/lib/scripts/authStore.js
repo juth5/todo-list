@@ -18,26 +18,30 @@ const authPromise = new Promise((resolve, reject) => {
     try {
       if (firebaseUser) {
         currentUser.set(firebaseUser);
-        const userDoc = doc(firebaseDb, "users", firebaseUser.uid);
 
+        const userDoc = doc(firebaseDb, "users", firebaseUser.uid);
         const docSnapshot = await getDoc(userDoc);
+        //userデータがあるか確認
         if (docSnapshot.exists()) {
           let user_data = docSnapshot.data();
-
           authUser.set(user_data);
+          console.log('3333333333333333333');
         }
         else {
+
           let user_data = {
             createdAt: new Date().toISOString(),
             uid: firebaseUser.uid,
           };
           await setDoc(doc(firebaseDb, "users", firebaseUser.uid), user_data);
           authUser.set(user_data);
+          //console.log($authUser,'新規登録後のauthUser')
         }
       }
       else {
         currentUser.set(null);
       }
+      console.log('認証done')
       resolve();
     }
     catch (error) {

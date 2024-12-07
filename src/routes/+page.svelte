@@ -22,8 +22,9 @@
 	let isLoading = false;
 
 	$: {
-		console.log($currentUser,'currentUser');
-		console.log($authUser, 'authUser')
+		if ($authUser && !$authUser.display_name) {
+			isOpenModal = true;
+		}
 	}
 
 	onMount( async () => {
@@ -47,9 +48,9 @@
 						}
 					});
 
-					if ($authUser && !$authUser.display_name) {
-						isOpenModal = true;
-					}
+					// if ($authUser && !$authUser.display_name) {
+					// 	isOpenModal = true;
+					// }
 				}
 				isLoading = false;
 			}
