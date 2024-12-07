@@ -46,9 +46,8 @@
 							isChecked: false,
 						}
 					});
-					const isReady = await awaitAuthReady();
 
-					if (awaitAuthReady() && $authUser && !$authUser.display_name) {
+					if ($authUser && !$authUser.display_name) {
 						isOpenModal = true;
 					}
 				}

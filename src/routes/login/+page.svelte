@@ -3,7 +3,7 @@
   import { collection, addDoc, updateDoc, doc, query, getDocs, where, setDoc } from "firebase/firestore";
   import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
   import { goto } from '$app/navigation';
-
+  import { awaitAuthReady } from "$lib/scripts/authStore";
 
 	let email = '';
   let password = '';
@@ -15,6 +15,7 @@
   let signIn = async (e) => {
     e.preventDefault();
     await signUp(email, password);
+    await awaitAuthReady();
     goto('/');
   };
 
@@ -64,12 +65,6 @@
               input.input.w-full.px20.rounded-30(type='password', bind:value='{loginPassword}', required)
             div.f.fc
               button.button.bg-light-green.text-white.rounded-30.w256.h40  ログイン
-
-
-
-
-
-
 </template>
 <style>
 
