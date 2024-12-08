@@ -2,7 +2,6 @@
 	import Footer from './Footer.svelte';
 	import Header from './Header.svelte';
 	import '../app.css';
-	import { currentUser } from '$lib/scripts/authStore';
 </script>
 
 <div class="app">

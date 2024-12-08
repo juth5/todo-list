@@ -6,7 +6,6 @@
   import SubTitle from '../../components/items/SubTitle.svelte';
   import { firebaseDb } from '$lib/scripts/firebase';
   import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
-  import { currentUser } from '$lib/scripts/authStore';
 
 $: {
   if ($currentUser) {

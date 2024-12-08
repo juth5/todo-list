@@ -1,6 +1,7 @@
 <script>
   import { collection, addDoc, updateDoc, doc, query, getDocs, where, deleteDoc, setDoc, serverTimestamp } from "firebase/firestore"; 
-  import { currentUser, authUser } from '$lib/scripts/authStore';
+  import { currentUser, authUser } from '$lib/scripts/firebase';
+
   import { firebaseDb } from '$lib/scripts/firebase';
 
   export let show = false;

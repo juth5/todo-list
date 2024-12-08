@@ -1,7 +1,6 @@
 	<script>
 		import { collection, addDoc, updateDoc, doc, query, getDocs, where, deleteDoc } from "firebase/firestore"; 
 		import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
-		import { currentUser } from '$lib/scripts/authStore';
 		import { firebaseDb } from '$lib/scripts/firebase';
 
 

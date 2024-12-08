@@ -3,7 +3,6 @@
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
   import Title from '../../components/items/Title.svelte';
   import SubTitle from '../../components/items/SubTitle.svelte';
-  // import { currentUser } from '$lib/scripts/authStore';
 
   // $: {
   //   currentUser;
