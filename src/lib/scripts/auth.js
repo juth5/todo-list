@@ -4,6 +4,7 @@ import { collection, addDoc, updateDoc, doc, query, getDocs, where, setDoc } fro
 import { auth } from "./firebase";
 import { getAuth } from "firebase/auth";
 import { firebaseDb } from '$lib/scripts/firebase';
+import { awaitAuthReady } from "./authStore";
 
 
 export async function signUp(email, password, name) {

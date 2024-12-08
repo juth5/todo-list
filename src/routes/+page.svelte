@@ -1,7 +1,7 @@
 <script>
 	import { collection, addDoc, updateDoc, doc, query, getDocs, where, deleteDoc } from "firebase/firestore"; 
 	import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
-	import { currentUser, authUser } from '$lib/scripts/authStore';
+  import { currentUser, authUser } from '$lib/scripts/firebase';
 	import { firebaseDb } from '$lib/scripts/firebase';
   import { page } from "$app/stores";
 	import { onMount } from 'svelte';
@@ -20,6 +20,7 @@
 	let text = '';
 	let inputElement = {};
 	let isLoading = false;
+	let isLogin = null;
 
 	$: {
 		if ($authUser && !$authUser.display_name) {
@@ -47,10 +48,6 @@
 							isChecked: false,
 						}
 					});
-
-					// if ($authUser && !$authUser.display_name) {
-					// 	isOpenModal = true;
-					// }
 				}
 				isLoading = false;
 			}
@@ -129,39 +126,41 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 <template lang='pug'>
-	+if('isLoading')
-		LoadingModal(show='{isLoading}')
-	div.container-960.h100vh.px20
-		+if('$currentUser')
-				div.mt100
-				+if('$authUser && $authUser.display_name')
-					h3.text-center ようこそ {$authUser.display_name} さん
-				h1.text-center.mb40 TODO List
-				form.mb50(on:submit!='{(e) => insertContent(e)}')
-					h3.mb12 TODO
-					div.f.fm.s-flex-column
-						input.input.border.w-full.rounded-30.px20.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
-						div.f.s-fr.s-w-full
-							button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
-				h3.mb12 TODO 一覧
-				div.mb30
-					+each('todoList as list, index')
-						div.f.fm
-							div.w10.mr12 {index + 1}.
-							input.w20.mr12(type='checkbox', bind:checked='{list.isChecked}')
-							li {list.data.content}
-				+if('todoList.length')
-					div.f.fr
-						div
-							div.mb12 終了したtodoは☑️！完了を押して消そう👍
+	+await('awaitAuthReady()')
+		+then('res')
+			+if('isLoading')
+				LoadingModal(show='{isLoading}')
+			div.container-960.h100vh.px20
+				+if('$currentUser')
+						div.mt100
+						+if('$authUser && $authUser.display_name')
+							h3.text-center ようこそ {$authUser.display_name} さん
+						h1.text-center.mb40 TODO List
+						form.mb50(on:submit!='{(e) => insertContent(e)}')
+							h3.mb12 TODO
+							div.f.fm.s-flex-column
+								input.input.border.w-full.rounded-30.px20.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
+								div.f.s-fr.s-w-full
+									button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
+						h3.mb12 TODO 一覧
+						div.mb30
+							+each('todoList as list, index')
+								div.f.fm
+									div.w10.mr12 {index + 1}.
+									input.w20.mr12(type='checkbox', bind:checked='{list.isChecked}')
+									li {list.data.content}
+						+if('todoList.length')
 							div.f.fr
-								button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 完了
+								div
+									div.mb12 終了したtodoは☑️！完了を押して消そう👍
+									div.f.fr
+										button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 完了
 
-		+if('!$currentUser')
-			div.f.fh.s-full
-				a.w256.rounded-30.bg-light-green.p10.text-center.text-white(href='/login') ログインページへ
-		+if('isOpenModal')
-			AuthModal(show='{isOpenModal}', onClose='{closeModal}')
+				+if('!$currentUser')
+					div.f.fh.s-full
+						a.w256.rounded-30.bg-light-green.p10.text-center.text-white(href='/login') ログインページへ
+				+if('isOpenModal')
+					AuthModal(show='{isOpenModal}', onClose='{closeModal}')
 </template>
 <style>
 

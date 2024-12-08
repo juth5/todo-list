@@ -4,8 +4,7 @@
 	import github from '$lib/images/github.svg';
 	import config from '$lib/scripts/config';
 	import { logOut } from "$lib/scripts/auth";
-	import { currentUser } from '$lib/scripts/authStore';
-
+	import { currentUser } from '$lib/scripts/firebase';
 	
 
 	let headerItems = [

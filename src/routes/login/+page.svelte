@@ -1,5 +1,4 @@
 <script>
-	import { currentUser } from '$lib/scripts/authStore';
   import { collection, addDoc, updateDoc, doc, query, getDocs, where, setDoc } from "firebase/firestore";
   import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
   import { goto } from '$app/navigation';
@@ -15,7 +14,6 @@
   let signIn = async (e) => {
     e.preventDefault();
     await signUp(email, password);
-    await awaitAuthReady();
     goto('/');
   };
 

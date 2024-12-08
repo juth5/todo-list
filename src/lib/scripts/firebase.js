@@ -1,7 +1,9 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { writable } from "svelte/store";
+import { browser } from '$app/environment';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,5 +25,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firebaseDb = getFirestore(app);
 const auth = getAuth(app);
+export const currentUser = writable(undefined);
+export const authUser = writable(null);
+
+
+
+const _authReadyPromise = new Promise((resolve) => {
+  if (!browser) {
+    resolve();
+    return ;
+  }
+  
+  onAuthStateChanged(auth, (res) => {
+    if (res) {
+      currentUser.set(res);
+    }
+    else {
+      currentUser.set(null);
+    }
+    resolve(res);
+    
+  });
+});
 
 export { app, firebaseDb, auth };
