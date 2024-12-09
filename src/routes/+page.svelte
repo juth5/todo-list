@@ -127,6 +127,7 @@
 </svelte:head>
 <template lang='pug'>
 	+await('awaitAuthReady()')
+		div
 		+then('res')
 			+if('isLoading')
 				LoadingModal(show='{isLoading}')

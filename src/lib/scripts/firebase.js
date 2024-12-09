@@ -37,10 +37,12 @@ const _authReadyPromise = new Promise((resolve) => {
   }
   
   onAuthStateChanged(auth, (res) => {
+    console.log('login!!!!!!!!!!!!')
     if (res) {
       currentUser.set(res);
     }
     else {
+      console.log('onAuth')
       currentUser.set(null);
     }
     resolve(res);
