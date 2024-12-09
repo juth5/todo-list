@@ -2,7 +2,8 @@
 		import { collection, addDoc, updateDoc, doc, query, getDocs, where, deleteDoc } from "firebase/firestore"; 
 		import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
 		import { firebaseDb } from '$lib/scripts/firebase';
-
+		import { currentUser, authUser } from '$lib/scripts/firebase';
+s
 
 		let name = '';
 		let email = '';
