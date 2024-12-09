@@ -13,6 +13,7 @@ const authPromise = new Promise((resolve, reject) => {
     return ;
   }
   currentUser.subscribe(async (value) => {
+    console.log('subscribe', value)
     // 初期化時は無視
     if (value === undefined) return ;
     
