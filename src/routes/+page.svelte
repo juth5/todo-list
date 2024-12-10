@@ -21,7 +21,6 @@
 	let isLogin = null;
 	$: ({ diaries } = $page.data);
 
-
 	$: {
 		if ($authUser && !$authUser.display_name) {
 			isOpenModal = true;
@@ -43,21 +42,31 @@
 
 			//登録したデータでないとエラーがでる
 			let content = {};
+
 			diaries.push({ data: { content: text }, id: docRef.id, isChecked: false });
 			diaries = diaries;
+
 			text = '';
 			inputElement.focus();
 		};
 
 		let saveTodoList = async () => {
-			let deleteData = diaries.filter(diary => diary.isChecked);
+			let deleteData = [];
+
+			for (let i = diaries.length - 1; i >= 0; i--) { // 後ろからループ
+				if (diaries[i].isChecked) {
+					deleteData.push(diaries.splice(i, 1)[0]); // 該当要素を削除し、取り出す
+				}
+			}
 
 			let promises = deleteData.map((data) => {
 				let ref = doc(firebaseDb, "diary", data.id);
 				return deleteDoc(ref);
 			});
+
 			await Promise.all(promises);
-			diaries = diaries.filter(diary => !diary.isChecked);
+
+			diaries = diaries;
 		};
 
 		// let getData = async () => {
@@ -111,7 +120,7 @@
 								input.input.border.w-full.rounded-30.px20.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
 								div.f.s-fr.s-w-full
 									button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
-						h3.mb12 TODO 一覧
+						h3.mb12 TODO 一覧 ({diaries.length})
 						div.mb30
 							+each('diaries as diary, index')
 								div.f.fm
