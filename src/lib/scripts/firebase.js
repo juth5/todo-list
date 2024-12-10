@@ -25,28 +25,24 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firebaseDb = getFirestore(app);
 const auth = getAuth(app);
-export const currentUser = writable(null);
+
+export const currentUser = writable(undefined);
 export const authUser = writable(null);
-
-
 
 const _authReadyPromise = new Promise((resolve) => {
   if (!browser) {
     resolve();
     return ;
   }
-  
+
   onAuthStateChanged(auth, (res) => {
-    console.log('login!!!!!!!!!!!!')
     if (res) {
       currentUser.set(res);
     }
     else {
-      console.log('onAuth')
       currentUser.set(null);
     }
     resolve(res);
-    
   });
 });
 
