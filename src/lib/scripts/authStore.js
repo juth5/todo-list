@@ -13,7 +13,6 @@ const authPromise = new Promise((resolve, reject) => {
     return ;
   }
   currentUser.subscribe(async (value) => {
-    console.log('subscribe', value)
     // 初期化時は無視
     if (value === undefined) return ;
     
@@ -50,42 +49,8 @@ const authPromise = new Promise((resolve, reject) => {
     else {
       authUser.set(null);
     }
-    resolve();
+    resolve('done');
   });
-  // onAuthStateChanged(auth, async (value) => {
-  //   try {
-  //     if (value) {
-  //       currentUser.set(value);
-
-  //       const userDoc = doc(firebaseDb, "users", value.uid);
-  //       const docSnapshot = await getDoc(userDoc);
-  //       //userデータがあるか確認
-  //       if (docSnapshot.exists()) {
-  //         let user_data = docSnapshot.data();
-  //         authUser.set(user_data);
-  //         console.log('11111111111111111111111')
-  //       }
-  //       else {
-
-  //         let user_data = {
-  //           createdAt: new Date().toISOString(),
-  //           uid: value.uid,
-  //         };
-  //         await setDoc(doc(firebaseDb, "users", value.uid), user_data);
-  //         authUser.set(user_data);
-  //       }
-  //     }
-  //     else {
-  //       currentUser.set(null);
-  //     }
-  //     console.log('2222222222222222')
-  //     resolve();
-  //   }
-  //   catch (error) {
-  //     console.error(error);
-  //     reject();
-  //   }
-  // });
 });
 
 

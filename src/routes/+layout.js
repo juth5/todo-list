@@ -8,5 +8,6 @@ export async function load() {
   if (browser) {
     promises.push(awaitAuthReady());
   }
+
   await Promise.all(promises);
 }
