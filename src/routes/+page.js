@@ -15,7 +15,7 @@ export async function load({params, fetch, parent}) {
     }
     else {
       const userId = get(currentUser).uid;
-      let diaryCollection = collection(firebaseDb, "diary");
+      let diaryCollection = collection(firebaseDb, "todo");
       let q = query(diaryCollection, where("uid", "==", userId));
       let querySnapshot = await getDocs(q);
 

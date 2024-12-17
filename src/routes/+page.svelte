@@ -34,7 +34,7 @@
 	let insertContent = async (e) => {
 			e.preventDefault();
 			if (!text) return ;
-			const docRef = await addDoc(collection(firebaseDb, "diary"), {
+			const docRef = await addDoc(collection(firebaseDb, "todo"), {
 				content: text,
 				uid: $currentUser.uid,
 				created_at: new Date()
@@ -60,7 +60,7 @@
 			}
 
 			let promises = deleteData.map((data) => {
-				let ref = doc(firebaseDb, "diary", data.id);
+				let ref = doc(firebaseDb, "todo", data.id);
 				return deleteDoc(ref);
 			});
 
