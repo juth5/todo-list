@@ -18,10 +18,16 @@
 			return `${year}-${month}-${day}`;
 		};
 
-		let saveRecord = (e) => {
+		let saveRecord = async (e) => {
 			e.preventDefault();
-			console.log(date);
+
+			if (!date) return ;
+			const docRef = await addDoc(collection(firebaseDb, "record"), {
+				uid: $currentUser.uid,
+				created_at: new Date(date)
+			});
 		};
+		
 	</script>
 <svelte:head>
 	<title>About</title>
