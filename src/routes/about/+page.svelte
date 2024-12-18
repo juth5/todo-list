@@ -9,6 +9,7 @@
 		
 		let date = '';
 		onMount(() => {
+			console.log('aaaaaaaaaaa')
 			let today = new Date();
 			date = formatDate(today);
 		});
