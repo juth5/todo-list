@@ -30,6 +30,9 @@
         }),
       });
       console.log("データが追加されました");
+      if (!record.todo) {
+        record.todo = [];
+      }
       record.todo.push({ content: text, isChecked: false });
       record.todo = record.todo;
     }
