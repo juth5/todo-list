@@ -69,35 +69,6 @@
 			diaries = diaries;
 		};
 
-		// let getData = async () => {
-		// 	try {
-		// 		if ($currentUser) {
-		// 			const userId = $currentUser.uid;
-					
-		// 			const diaryCollection = collection(firebaseDb, "diary");
-		// 			const q = query(diaryCollection, where("uid", "==", userId));
-		// 			const querySnapshot = await getDocs(q);
-
-		// 			querySnapshot.forEach((doc) => {
-		// 				todoList.push({ id: doc.id, ...doc.data() }); // ドキュメントIDを含める
-		// 		});
-
-		// 		todoList = todoList.map((list) => {
-		// 			return {
-		// 				data: list,
-		// 				isChecked: false,
-		// 			}
-		// 		});
-
-		// 		console.log(todoList,'hoge')
-
-		// 		}
-		// 	}
-		// 	catch(e) {
-		// 		console.error(e);
-		// 	}
-		// };
-
 </script>
 
 <svelte:head>

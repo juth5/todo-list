@@ -35,5 +35,6 @@ export async function load({params, fetch, parent}) {
   return {
     diaries,
     record: record,
+    recordId,
   };
 };

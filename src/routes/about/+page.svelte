@@ -4,6 +4,8 @@
 		import { firebaseDb } from '$lib/scripts/firebase';
 		import { currentUser, authUser } from '$lib/scripts/firebase';
     import { onMount } from "svelte";
+		import { goto } from '$app/navigation';
+
 		
 		let date = '';
 		onMount(() => {
@@ -26,6 +28,7 @@
 				uid: $currentUser.uid,
 				created_at: new Date(date)
 			});
+			goto(`/record/${docRef.id}`);
 		};
 		
 	</script>
@@ -36,7 +39,7 @@
 <template lang='pug'>
 	div.container-960.h100vh.px20
 		div.mt100
-			h2.text-center.fs20.bold.mb20 日付を入力してレコードを作成しよう
+			h2.text-center.fs20.bold.mb20 レコードを作成しよう
 			form(on:submit!='{(e) => saveRecord(e)}')
 				div.f.fb.fbw
 					div
