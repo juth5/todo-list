@@ -28,6 +28,8 @@
 				uid: $currentUser.uid,
 				created_at: new Date(date)
 			});
+
+			console.log(docRef.id,'ddddddddd')
 			goto(`/record/${docRef.id}`);
 		};
 		
