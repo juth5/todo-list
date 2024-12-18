@@ -44,7 +44,7 @@
 				div.f.fb.fbw
 					div
 						div.mb4.bold 日付
-						input.input(type='date', bind:value='{date}', disabled)
+						input.input(type='date', bind:value='{date}')
 					button.button.w128.rounded-30.bg-light-green.text-white 作成
 
 
