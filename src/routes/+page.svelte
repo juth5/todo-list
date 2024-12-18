@@ -34,7 +34,7 @@
 	let insertContent = async (e) => {
 			e.preventDefault();
 			if (!text) return ;
-			const docRef = await addDoc(collection(firebaseDb, "diary"), {
+			const docRef = await addDoc(collection(firebaseDb, "todo"), {
 				content: text,
 				uid: $currentUser.uid,
 				created_at: new Date()
@@ -60,7 +60,7 @@
 			}
 
 			let promises = deleteData.map((data) => {
-				let ref = doc(firebaseDb, "diary", data.id);
+				let ref = doc(firebaseDb, "todo", data.id);
 				return deleteDoc(ref);
 			});
 
@@ -68,35 +68,6 @@
 
 			diaries = diaries;
 		};
-
-		// let getData = async () => {
-		// 	try {
-		// 		if ($currentUser) {
-		// 			const userId = $currentUser.uid;
-					
-		// 			const diaryCollection = collection(firebaseDb, "diary");
-		// 			const q = query(diaryCollection, where("uid", "==", userId));
-		// 			const querySnapshot = await getDocs(q);
-
-		// 			querySnapshot.forEach((doc) => {
-		// 				todoList.push({ id: doc.id, ...doc.data() }); // ドキュメントIDを含める
-		// 		});
-
-		// 		todoList = todoList.map((list) => {
-		// 			return {
-		// 				data: list,
-		// 				isChecked: false,
-		// 			}
-		// 		});
-
-		// 		console.log(todoList,'hoge')
-
-		// 		}
-		// 	}
-		// 	catch(e) {
-		// 		console.error(e);
-		// 	}
-		// };
 
 </script>
 
