@@ -23,14 +23,16 @@
 
 		let saveRecord = async (e) => {
 			e.preventDefault();
-
+			alert('push')
 			if (!date) return ;
 			const docRef = await addDoc(collection(firebaseDb, "record"), {
 				uid: $currentUser.uid,
 				created_at: new Date(date)
 			});
 
-			console.log(docRef.id,'ddddddddd')
+			console.log(docRef.id,'ddddddddd');
+			alert('push1', docRef.id)
+
 			goto(`/record/${docRef.id}`);
 		};
 		
