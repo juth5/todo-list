@@ -25,6 +25,7 @@
 			e.preventDefault();
 			alert('push')
 			if (!date) return ;
+			alert('push2')
 			const docRef = await addDoc(collection(firebaseDb, "record"), {
 				uid: $currentUser.uid,
 				created_at: new Date(date)
