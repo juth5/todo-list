@@ -6,7 +6,6 @@
     import { onMount } from "svelte";
 		import { goto } from '$app/navigation';
 
-		
 		let date = '';
 		onMount(() => {
 			let today = new Date();
@@ -54,4 +53,3 @@
 <style>
 
 </style>
-

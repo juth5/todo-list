@@ -15,7 +15,6 @@
 	import { format } from 'date-fns';
 	import { goto } from '$app/navigation';
 
-
 	let isOpenModal = false;
 	let todoList = [];
 	let text = '';
@@ -30,6 +29,10 @@
 			isOpenModal = true;
 		}
 	}
+	onMount(() => {
+		let today = new Date();
+		recordDate = formatDate(today);
+	});
 
   let closeModal = () => {
     isOpenModal = false;
@@ -85,6 +88,13 @@
 				created_at: new Date(recordDate)
 			});
 			goto(`/record/${docRef.id}`);
+		};
+
+		let formatDate = (date) => {
+			const year = date.getFullYear();
+			const month = String(date.getMonth() + 1).padStart(2, '0'); // 0始まりなので+1
+			const day = String(date.getDate()).padStart(2, '0');
+			return `${year}-${month}-${day}`;
 		};
 
 </script>
