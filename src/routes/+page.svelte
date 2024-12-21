@@ -12,14 +12,18 @@
 	import config from '$lib/scripts/config';
   import AuthModal from "../lib/modal/AuthModal.svelte";
 	import LoadingModal from "../lib/modal/LoadingModal.svelte";
-	
+	import { format } from 'date-fns';
+	import { goto } from '$app/navigation';
+
+
 	let isOpenModal = false;
 	let todoList = [];
 	let text = '';
 	let inputElement = {};
 	let isLoading = false;
 	let isLogin = null;
-	$: ({ diaries } = $page.data);
+	let recordDate = null;
+	$: ({ records } = $page.data);
 
 	$: {
 		if ($authUser && !$authUser.display_name) {
@@ -68,6 +72,20 @@
 
 			diaries = diaries;
 		};
+		let formattedDate = (date) => {
+			return format(new Date(date * 1000), 'yyyy-MM-dd');
+		};
+
+		let saveRecord = async (e) => {
+			e.preventDefault();
+			if (!recordDate) return ;
+
+			const docRef = await addDoc(collection(firebaseDb, "record"), {
+				uid: $currentUser.uid,
+				created_at: new Date(recordDate)
+			});
+			goto(`/record/${docRef.id}`);
+		};
 
 </script>
 
@@ -84,26 +102,21 @@
 					div.mt100
 						+if('$authUser && $authUser.display_name')
 							h3.text-center ようこそ {$authUser.display_name} さん
-						h1.text-center.mb40 TODO List
-						form.mb50(on:submit!='{(e) => insertContent(e)}')
-							h3.mb12 TODO
-							div.f.fm.s-flex-column
-								input.input.border.w-full.rounded-30.px20.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
-								div.f.s-fr.s-w-full
-									button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
-						h3.mb12 TODO 一覧 ({diaries.length})
+						h1.text-center.mb40.s-mb20 TODO List
+						h2.text-center.fs20.bold.mb20.s-mb10 レコードを作成しよう
+						div.mb40.s-mb20
+							form(on:submit!='{(e) => saveRecord(e)}')
+								div.f.fb.fbw
+									div
+										div.mb4.bold 日付
+										input.input(type='date', bind:value='{recordDate}')
+									button.button.w128.rounded-30.bg-light-green.text-white 作成
+
+						h3.mb12 レコード一覧
 						div.mb30
-							+each('diaries as diary, index')
-								div.f.fm
-									div.w10.mr12 {index + 1}.
-									input.w20.mr12(type='checkbox', bind:checked='{diary.isChecked}')
-									li {diary.data.content}
-						+if('diaries.length')
-							div.f.fr
-								div
-									div.mb12 終了したtodoは☑️！完了を押して消そう👍
-									div.f.fr
-										button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 完了
+							+if('records && records.length')
+								+each('records as record, index')
+									a.block.lh20(href='/record/{record.id}') {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
 					+if('isOpenModal')
 						AuthModal(show='{isOpenModal}', onClose='{closeModal}')
 					+else
