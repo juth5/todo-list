@@ -9,7 +9,6 @@
 		
 		let date = '';
 		onMount(() => {
-			console.log('aaaaaaaaaaa')
 			let today = new Date();
 			date = formatDate(today);
 		});
@@ -23,17 +22,13 @@
 
 		let saveRecord = async (e) => {
 			e.preventDefault();
-			alert('push')
+
 			if (!date) return ;
-			alert('push2')
+
 			const docRef = await addDoc(collection(firebaseDb, "record"), {
 				uid: $currentUser.uid,
 				created_at: new Date(date)
 			});
-
-			console.log(docRef.id,'ddddddddd');
-			alert('push1', docRef.id)
-
 			goto(`/record/${docRef.id}`);
 		};
 		
