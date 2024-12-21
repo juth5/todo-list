@@ -126,7 +126,7 @@
 						div.mb30
 							+if('records && records.length')
 								+each('records as record, index')
-									a.block.lh20(href='/record/{record.id}') {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
+									a.block.p10.lh20.border-bottom.hover-list.s-px0(href='/record/{record.id}') {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
 					+if('isOpenModal')
 						AuthModal(show='{isOpenModal}', onClose='{closeModal}')
 					+else
