@@ -6,15 +6,13 @@
   import { onMount } from "svelte";
   import { page } from "$app/stores";
   import { awaitAuthReady } from "../../../lib/scripts/authStore";
+  import { format } from 'date-fns';
   
-  $: ({ diaries, record, recordId } = $page.data);
+  $: ({ record, recordId } = $page.data);
 	let inputElement = {};
   let text = '';
 
-
-  onMount(() => {
-
-  });
+  onMount(() => {});
 
   let insertContent = async (e) => {
     e.preventDefault();
@@ -56,6 +54,9 @@
     }
 	};
 
+  let formattedDate = (date) => {
+    return format(new Date(date * 1000), 'yyyy-MM-dd');
+  };
 
 </script>
 <svelte:head>
@@ -69,7 +70,7 @@ div.container-960.h100vh.px20
     +then('res')
       +if('$currentUser')
         div.mt100
-          h2.text-center.fs20.bold.mb20 あなたのレコードです
+          h2.text-center.fs20.bold.mb20 {formattedDate(record.created_at.seconds)}のレコードです
           form.mb50(on:submit!='{(e) => insertContent(e)}')
             h3.mb12 TODO
             div.f.fm.s-flex-column
@@ -88,10 +89,6 @@ div.container-960.h100vh.px20
                   div.mb12 終了したtodoは☑️！完了を押して消そう👍
                   div.f.fr
                     button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 保存
-
-    
-
-
 
 </template>
 <style>

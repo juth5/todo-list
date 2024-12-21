@@ -6,7 +6,6 @@ import { collection, addDoc, updateDoc, doc, query, getDocs, where, deleteDoc, g
 import { firebaseDb } from '$lib/scripts/firebase';
 
 export async function load({params, fetch, parent}) {
-  let diaries = [];
   let record = {};
 
   await parent();
@@ -33,7 +32,6 @@ export async function load({params, fetch, parent}) {
   }
 
   return {
-    diaries,
     record: record,
     recordId,
   };
