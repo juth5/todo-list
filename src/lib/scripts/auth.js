@@ -5,6 +5,8 @@ import { auth } from "./firebase";
 import { getAuth } from "firebase/auth";
 import { firebaseDb } from '$lib/scripts/firebase';
 import { awaitAuthReady } from "./authStore";
+import { goto } from '$app/navigation';
+
 
 
 export async function signUp(email, password, name) {
@@ -39,6 +41,7 @@ export async function logIn(email, password) {
 export async function logOut() {
   try {
     await signOut(auth);
+    goto('/login');
     console.log('User logged out');
   } catch (error) {
     console.error('Error logging out:', error.message);

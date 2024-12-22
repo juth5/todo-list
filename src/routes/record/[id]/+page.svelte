@@ -141,8 +141,8 @@ div.container-960.h100vh.px20
           +if('displayImages && displayImages.length')
             div.f.fm.s-flex-column
               +each('displayImages as image')
-                div.col4.s-w-full.p10
-                  img.s-full.block.object-fit-contain(src='{image}')
+                div.col4.p10.rounded-10.s-w-full.s-px0
+                  img.s-full.block.object-fit-contain.rounded-10(src='{image}')
       +if('isLoading')
         LoadingModal(show='{true}')
 
