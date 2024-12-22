@@ -4,6 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { writable } from "svelte/store";
 import { browser } from '$app/environment';
+import { getStorage } from "firebase/storage";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -25,6 +26,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firebaseDb = getFirestore(app);
 const auth = getAuth(app);
+// Storageのインスタンスを取得
+const storage = getStorage(app);
 
 export const currentUser = writable(undefined);
 export const authUser = writable(null);
@@ -46,4 +49,4 @@ const _authReadyPromise = new Promise((resolve) => {
   });
 });
 
-export { app, firebaseDb, auth };
+export { app, firebaseDb, auth, storage };

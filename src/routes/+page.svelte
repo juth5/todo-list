@@ -82,12 +82,17 @@
 		let saveRecord = async (e) => {
 			e.preventDefault();
 			if (!recordDate) return ;
+			isLoading = true;
 
+			
 			const docRef = await addDoc(collection(firebaseDb, "record"), {
 				uid: $currentUser.uid,
 				created_at: new Date(recordDate)
 			});
+			
 			goto(`/record/${docRef.id}`);
+			isLoading = false;
+
 		};
 
 		let formatDate = (date) => {
@@ -132,6 +137,9 @@
 					+else
 						div.f.fh.s-full
 							a.w256.rounded-30.bg-light-green.p10.text-center.text-white(href='/login') ログインページへ
+				+if('isLoading')
+					LoadingModal(show='{true}')
+				
 </template>
 <style>
 
