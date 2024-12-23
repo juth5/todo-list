@@ -12,8 +12,10 @@
 	import config from '$lib/scripts/config';
   import AuthModal from "../lib/modal/AuthModal.svelte";
 	import LoadingModal from "../lib/modal/LoadingModal.svelte";
-	import { format } from 'date-fns';
+	import { format, getMilliseconds } from 'date-fns';
 	import { goto } from '$app/navigation';
+	import { startOfDay, subDays, isWithinInterval } from 'date-fns';
+
 
 	let isOpenModal = false;
 	let todoList = [];
@@ -107,6 +109,28 @@
 			return pending_todo_count.length;
 		};
 
+		let getIcon = (record) => {
+			let pending_count = getPendingTodoCount(record.data.todo);
+			if (record.data.todo.length === pending_count) {
+				return '👏';
+			}
+			else {
+				if (isBeforeDay(record)) {
+					return '🔥'
+				}
+				return '✅';
+			}
+		};
+
+		let isBeforeDay = (record) => {
+			const date = new Date(record.data.created_at.seconds * 1000);
+			// 今日の開始時間と前日の開始時間を取得
+			const today = startOfDay(new Date());
+			const yesterday = subDays(today, 1);
+			// 前日かどうかを判定
+			return isWithinInterval(date, { start: yesterday, end: today });
+		};
+
 </script>
 
 <svelte:head>
@@ -136,10 +160,10 @@
 						div.mb30
 							+if('records && records.length')
 								+each('records as record, index')
-									div.f.fm.fbw.p10.lh20.border-bottom.hover-list.s-px0
-										a.block(href='/record/{record.id}') {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
+									a.f.fm.fbw.p10.lh20.border-bottom.hover-list.hover-text-decoration-none.s-px0(href='/record/{record.id}')
+										div {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
 										+if('record.data.todo && record.data.todo.length')
-											div ✅ {getPendingTodoCount(record.data.todo)}/{record.data.todo.length} 完了
+											div {getIcon(record)} {getPendingTodoCount(record.data.todo)}/{record.data.todo.length} 完了
 					+if('isOpenModal')
 						AuthModal(show='{isOpenModal}', onClose='{closeModal}')
 					+else
@@ -147,7 +171,6 @@
 							a.w256.rounded-30.bg-light-green.p10.text-center.text-white(href='/login') ログインページへ
 				+if('isLoading')
 					LoadingModal(show='{true}')
-				
 </template>
 <style>
 

@@ -104,6 +104,15 @@
     }
   };
 
+  let isValidURL = (str) => {
+    try {
+      new URL(str);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
 </script>
 <svelte:head>
 <title>About</title>
@@ -132,8 +141,10 @@ div.container-960.h100vh.px20
                     div.f.fm.flex-fixed
                       div.w10.mr12 {index + 1}.
                       input.w20.mr12(type='checkbox', bind:checked='{todo.isChecked}')
-                    div
+                    +if('!isValidURL(todo.content)')
                       li.word-break-all(class!='{todo.isChecked ? "text-decoration-line-through" : ""}') {todo.content}
+                      +else
+                        a.word-break-all.text-link(href!='{todo.content}', class!='{todo.isChecked ? "text-decoration-line-through" : ""}', target='_blank') {todo.content}
               +if('record.todo.length')
                 div.f.fr
                   div
@@ -149,7 +160,6 @@ div.container-960.h100vh.px20
                   img.s-full.block.object-fit-contain(src='{image}')
       +if('isLoading')
         LoadingModal(show='{true}')
-
 </template>
 <style>
 
