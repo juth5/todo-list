@@ -102,6 +102,11 @@
 			return `${year}-${month}-${day}`;
 		};
 
+		let getPendingTodoCount = (todo) => {
+			let pending_todo_count = todo.filter(td => td.isChecked);
+			return pending_todo_count.length;
+		};
+
 </script>
 
 <svelte:head>
@@ -131,7 +136,10 @@
 						div.mb30
 							+if('records && records.length')
 								+each('records as record, index')
-									a.block.p10.lh20.border-bottom.hover-list.s-px0(href='/record/{record.id}') {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
+									div.f.fm.fbw.p10.lh20.border-bottom.hover-list.s-px0
+										a.block(href='/record/{record.id}') {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
+										+if('record.data.todo && record.data.todo.length')
+											div ✅ {getPendingTodoCount(record.data.todo)}/{record.data.todo.length} 完了
 					+if('isOpenModal')
 						AuthModal(show='{isOpenModal}', onClose='{closeModal}')
 					+else

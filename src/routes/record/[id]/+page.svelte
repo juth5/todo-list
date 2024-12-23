@@ -123,19 +123,23 @@ div.container-960.h100vh.px20
               input.input.border.w-full.rounded-30.px20.mr24.s-mr0.s-mb12(bind:value='{text}', bind:this='{inputElement}')
               div.f.s-fr.s-w-full
                 button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white 追加
-          +if('record.todo && record.todo.length')
-            h3.mb12 TODO一覧
-            +each('record.todo as todo, index')
-              div.f.fm
-                div.w10.mr12 {index + 1}.
-                input.w20.mr12(type='checkbox', bind:checked='{todo.isChecked}')
-                li(class!='{todo.isChecked ? "text-decoration-line-through" : ""}') {todo.content}
-            +if('record.todo.length')
-              div.f.fr
-                div
-                  div.mb12 終了したtodoは☑️！完了を押して消そう👍
-                  div.f.fr
-                    button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 保存
+          div.mb50
+            +if('record.todo && record.todo.length')
+              h3.mb12 TODO一覧
+              div.mb12
+                +each('record.todo as todo, index')
+                  div.f.ft.mb6
+                    div.f.fm.flex-fixed
+                      div.w10.mr12 {index + 1}.
+                      input.w20.mr12(type='checkbox', bind:checked='{todo.isChecked}')
+                    div
+                      li.word-break-all(class!='{todo.isChecked ? "text-decoration-line-through" : ""}') {todo.content}
+              +if('record.todo.length')
+                div.f.fr
+                  div
+                    div.mb12 終了したtodoは✅！保存を押して消そう👍
+                    div.f.fr
+                      button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 保存
           h3.mb12 画像を追加
           input.mb12(type='file', on:change!='{(e) => uploadImage(e)}')
           +if('displayImages && displayImages.length')
