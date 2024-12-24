@@ -3,24 +3,30 @@
   import { signUp, logOut , logIn, getToken } from "$lib/scripts/auth";
   import { goto } from '$app/navigation';
   import { awaitAuthReady } from "$lib/scripts/authStore";
+  import LoadingModal from "$lib/modal/LoadingModal.svelte";
 
 	let email = '';
   let password = '';
   let currentMode = 'logIn';
+  let isLoading = false;
 
   let loginEmail = '';
   let loginPassword = '';
 
   let signIn = async (e) => {
     e.preventDefault();
+    isLoading = true;
     await signUp(email, password);
     goto('/');
+    isLoading = false;
   };
 
   let login = async (e) => {
     e.preventDefault();
+    isLoading = true;
     await logIn(loginEmail, loginPassword);
     goto('/');
+    isLoading = false;
   };
 
   let changeMode = (mode) => {
@@ -63,6 +69,8 @@
               input.input.w-full.px20.rounded-30(type='password', bind:value='{loginPassword}', required)
             div.f.fc
               button.button.bg-light-green.text-white.rounded-30.w256.h40  ログイン
+    +if('isLoading')
+      LoadingModal(show='{true}')
 </template>
 <style>
 
