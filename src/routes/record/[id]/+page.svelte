@@ -9,7 +9,8 @@
   import { format } from 'date-fns';
   import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
   import LoadingModal from "$lib/modal/LoadingModal.svelte";
-  
+  import { goto } from '$app/navigation';
+
   $: ({ record, recordId } = $page.data);
   let displayImages = [];
 	let inputElement = {};
@@ -113,6 +114,20 @@
     }
   };
 
+  let deleteRecord = async () => {
+    let result = confirm('本当にこのレコードを削除しますか？削除すると元には戻せません。');
+    if (!result) return ;
+
+    isLoading = true;
+
+    const docRef = doc(firebaseDb, "record", recordId);
+    await deleteDoc(docRef);
+    alert('削除しました。');
+
+    isLoading = false;
+    goto('/');
+  };
+
 </script>
 <svelte:head>
 <title>About</title>
@@ -151,13 +166,17 @@ div.container-960.h100vh.px20
                     div.mb12 終了したtodoは✅！保存を押して消そう👍
                     div.f.fr
                       button.button.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveTodoList()}') 保存
-          h3.mb12 画像を追加
-          input.mb12(type='file', on:change!='{(e) => uploadImage(e)}')
-          +if('displayImages && displayImages.length')
-            div.f.fm.s-flex-column
-              +each('displayImages as image')
-                div.col4.s-w-full.p10
-                  img.s-full.block.object-fit-contain(src='{image}')
+          div.pb100
+            h3.mb12 画像を追加
+            input.mb12(type='file', on:change!='{(e) => uploadImage(e)}')
+            +if('displayImages && displayImages.length')
+              div.f.fm.s-flex-column
+                +each('displayImages as image')
+                  div.col4.s-w-full.p10
+                    img.s-full.block.object-fit-contain(src='{image}')
+        div.fixed.b0.r0.w-full.bg-black.py6.px20
+          div.container-1240.f.fr.w-full
+            button.button.rounded-30.w128.bg-red.text-white(on:click!='{() => deleteRecord()}') 削除
       +if('isLoading')
         LoadingModal(show='{true}')
 </template>
