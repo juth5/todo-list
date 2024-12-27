@@ -114,6 +114,10 @@
     }
   };
 
+  let getDelayStyle = (index) => {
+    return index * 0.1;
+  };
+
   let deleteRecord = async () => {
     let result = confirm('本当にこのレコードを削除しますか？削除すると元には戻せません。');
     if (!result) return ;
@@ -152,7 +156,7 @@ div.container-960.h100vh.px20
               h3.mb12 TODO一覧
               div.mb12
                 +each('record.todo as todo, index')
-                  div.f.ft.mb6
+                  div.f.ft.mb6.animate-slide(style!=`animation-delay: {getDelayStyle(index)}s`)
                     div.f.fm.flex-fixed
                       div.w10.mr12 {index + 1}.
                       input.w20.mr12(type='checkbox', bind:checked='{todo.isChecked}')

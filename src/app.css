@@ -149,3 +149,21 @@ button:focus:not(:focus-visible) {
 .hover-text-decoration-none:hover {
 	text-decoration: none;
 }
+/* 初期位置 */
+.animate-slide {
+  transform: translateX(100%); /* 画面右側に配置 */
+  opacity: 0; /* 初期状態で透明 */
+  animation: slideIn 0.5s ease-out forwards; /* アニメーションを適用 */
+}
+
+/* アニメーション定義 */
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%); /* 右から開始 */
+    opacity: 0; /* 完全透明 */
+  }
+  100% {
+    transform: translateX(0); /* 最終位置 */
+    opacity: 1; /* 表示 */
+  }
+}
