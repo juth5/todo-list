@@ -5,9 +5,14 @@
 	import config from '$lib/scripts/config';
 	import { logOut } from "$lib/scripts/auth";
 	import { currentUser } from '$lib/scripts/firebase';
-	
+	import { awaitAuthReady } from "$lib/scripts/authStore";
+	import { goto } from '$app/navigation';
 
 	let headerItems = [
+		{
+			label: 'mypage',
+			action: () => goto(`/${$currentUser.uid}`),
+		},
 		{
 			label: 'logout',
 			action: () => logOut(),
@@ -29,13 +34,17 @@
 				a(href='/') home
 				//- a.s-show(href='/')
 				//- 	img.h30.block.object-fit-contain(src='/home.svg')
-				+if('$currentUser')
-					+each('headerItems as item')
-						button.button.rounded-30.bg-light-green.text-white(type='button', on:click='{logOut}') {item.label}
-				//- div.f.fm.s-show
-				//- 	+each('icons as icon')
-				//- 		a.mr24.mr0-last(href='{icon.link}', target='blank')
-				//- 			img.block.object-fit-contain.h30(src='{icon.icon}')
+				+await('awaitAuthReady()')
+						//- LoadingModal(show='{true}')
+						+then('res')
+							+if('$currentUser')
+								div
+									+each('headerItems as item')
+										button.button.rounded-30.bg-light-green.text-white.mr10.mr0-last(type='button', on:click='{item.action}') {item.label}
+								//- div.f.fm.s-show
+								//- 	+each('icons as icon')
+								//- 		a.mr24.mr0-last(href='{icon.link}', target='blank')
+								//- 			img.block.object-fit-contain.h30(src='{icon.icon}')
 </template>
 
 
