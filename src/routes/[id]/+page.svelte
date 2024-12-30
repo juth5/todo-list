@@ -30,6 +30,11 @@
   let openShareModal = () => {
     alert("share");
   };
+
+  let signOut = () => {
+    logOut();
+    goto('/');
+  };
 </script>
 <svelte:head>
 <title>About</title>
@@ -42,6 +47,8 @@ div.container-960.h100vh.px20
     +then('res')
       +if('$currentUser')
         div.mt100
+        div.f.fr
+          button.button.flex-fixed.rounded-20.w80.bg-light-green.text-white(on:click!='{() => signOut()}') logout
         h2.text-center.fs20.bold.mb20 Myページ
         div.f.ft.mb16
           div.s89.rounded-full.overflow-hidden.mr16
