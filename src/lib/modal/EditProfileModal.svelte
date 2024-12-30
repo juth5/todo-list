@@ -7,8 +7,8 @@
   import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
   export let show = false;
-  export let onClose = () => {};
-  let src = '/no-image.png';
+  let src = $authUser.icon_image ? $authUser.icon_image : '/no-image.png';
+
   let file = null;
   let userName = $authUser.display_name;
 
@@ -16,48 +16,13 @@
   const dispatch = createEventDispatcher();
   $: {
     show;
-    if (!$authUser.icon_image) {
-      src = '/no-image.png';
-    }
   }
 
   let closeModal = () => {
-    src = $authUser.icon_image;
+    src = $authUser.icon_image || '/no-image.png';
     userName = $authUser.display_name;
     show = false;
   };
-
-let registerUserName = async () => {
-  if (!nameValue) return ;
-  try {
-    // currentUser と nameValue を検証
-    if (!$currentUser || !$currentUser.uid) {
-      console.error("currentUserが未定義、またはUIDがありません");
-      return;
-    }
-    if (!nameValue || nameValue.trim() === "") {
-      console.error("名前が入力されていません");
-      return;
-    }
-    let user_data = {
-      uid: $currentUser.uid,
-      display_name: nameValue,
-    };
-
-    // Firestoreにデータを保存
-    await setDoc(doc(firebaseDb, "users", $currentUser.uid), {
-      display_name: nameValue,
-      createdAt: serverTimestamp(),
-    });
-
-    authUser.set(user_data);
-    console.log("ユーザー名が登録されました");
-    nameValue = ""; // 入力フィールドをリセット
-    onClose();
-  } catch (error) {
-    console.error("Firestoreエラー:", error.message);
-  }
-};
 
 let clickInputFile = () => {
   fileInput.click();
@@ -100,7 +65,7 @@ let saveUserProfile = async () => {
     }
 };
 
-  
+
 </script>
 <template lang='pug'>
   +if('show')
@@ -110,7 +75,7 @@ let saveUserProfile = async () => {
           button.p6.fs20(on:click!='{() => closeModal()}') ×
         div.f.fc.mb18
           div.relative.s89.rounded-full.cursor-pointer.overflow-hidden.border(on:click!='{() => clickInputFile()}')
-            img.block.s-full.object-fit-cover.rounded-full(src='{$authUser.icon_image || src}')
+            img.block.s-full.object-fit-cover.rounded-full(src='{src}')
             div.absolute.trbl0.f.fh ➕
             input.hide(type='file', bind:this='{fileInput}', on:change!='{(e) => uploadUserImage(e)}')
         div.mb32
@@ -119,7 +84,7 @@ let saveUserProfile = async () => {
         div.f.fr
           button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveUserProfile()}') 保存
 
-        
+
 
 
 
