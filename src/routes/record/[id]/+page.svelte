@@ -180,7 +180,8 @@ div.container-960.h100vh.px20
                     img.s-full.block.object-fit-contain(src='{image}')
         div.fixed.b0.r0.w-full.bg-black.py6.px20
           div.container-1240.f.fr.w-full
-            button.button.rounded-30.w128.bg-red.text-white(on:click!='{() => deleteRecord()}') 削除
+            button.button.f.fh.rounded-30.s40.bg-white.p4(on:click!='{() => deleteRecord()}')
+              img.block.s-full.object-fit-contain(src='/delete.svg')
       +if('isLoading')
         LoadingModal(show='{true}')
 </template>

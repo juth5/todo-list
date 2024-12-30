@@ -113,6 +113,9 @@ button:focus:not(:focus-visible) {
 	width: 1px;
 	white-space: nowrap;
 }
+.w150 {
+  width: 150px;
+}
 
 .pale-yellow {
 	color: #FFEDB3;
