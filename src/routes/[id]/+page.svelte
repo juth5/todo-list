@@ -10,8 +10,12 @@
   import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
   import LoadingModal from "$lib/modal/LoadingModal.svelte";
   import { goto } from '$app/navigation';
+  import EditProfileModal from "$lib/modal/EditProfileModal.svelte";
 
   $: ({ user, userId } = $page.data);
+  let isOpenEditProfileModal = false;
+  let src = '/no-image.png';
+
   // let displayImages = [];
 	// let inputElement = {};
   // let text = '';
@@ -22,10 +26,14 @@
   }
 
   let openEditProfileModal = () => {
-    alert("profile edit");
+    isOpenEditProfileModal = true;
   };
 
+  let closeEditProfileModal = () => {
+    isOpenEditProfileModal = false;
+  };
 
+  
   let openShareModal = () => {
     alert("share");
   };
@@ -151,16 +159,14 @@ div.container-960.h100vh.px20
         div.mt100
         h2.text-center.fs20.bold.mb20 Myページ
         div.f.ft.mb16
-          div.s89.rounded-full.bg-red.mr16
+          div.s89.rounded-full.overflow-hidden.mr16
+            img.block.object-fit-cover.s-full(src='{$authUser.icon_image || src}')
           div.fs20 {$authUser.display_name}
         div.f.fr.mb18
           button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openEditProfileModal()}') プロフィール編集
         div.f.fr
           button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openShareModal()}') 共有
-
-
-
-
+        EditProfileModal(bind:show='{isOpenEditProfileModal}')
       //- +if('isLoading')
       //-   LoadingModal(show='{true}')
 </template>
