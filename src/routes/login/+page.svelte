@@ -16,17 +16,32 @@
   let signIn = async (e) => {
     e.preventDefault();
     isLoading = true;
-    await signUp(email, password);
-    goto('/');
-    isLoading = false;
+    try {
+      await signUp(email, password);
+      goto('/');
+    }
+    catch(e) {
+      console.error(e);
+      alert(e);
+    }
+    finally {
+      isLoading = false;
+    }
   };
 
   let login = async (e) => {
     e.preventDefault();
     isLoading = true;
-    await logIn(loginEmail, loginPassword);
-    goto('/');
-    isLoading = false;
+    try {
+      await logIn(loginEmail, loginPassword);
+      goto('/');
+    }
+    catch(e) {
+      isLoading = false;
+    }
+    finally {
+      isLoading = false;
+    }
   };
 
   let changeMode = (mode) => {

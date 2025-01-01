@@ -5,12 +5,16 @@
   import { createEventDispatcher } from "svelte";
 	import { onMount } from 'svelte';
   import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+  import LoadingModal from "$lib/modal/LoadingModal.svelte";
+
+  
 
   export let show = false;
   let src = $authUser.icon_image ? $authUser.icon_image : '/no-image.png';
 
   let file = null;
   let userName = $authUser.display_name;
+  let editModalLoading = false;
 
   let fileInput = {};
   const dispatch = createEventDispatcher();
@@ -30,7 +34,6 @@ let clickInputFile = () => {
 
 let uploadUserImage = async (e) => {
   e.preventDefault();
-
   file = e.currentTarget.files[0];
   if (!file) return ;
   src = URL.createObjectURL(file);
@@ -38,6 +41,7 @@ let uploadUserImage = async (e) => {
 
 let saveUserProfile = async () => {
   let updateUserData = {};
+  editModalLoading = true;
   //ファイルに変更があれば
   if (file) {
     let storageRef = ref(storage, `images/${file.name}`);  
@@ -56,12 +60,12 @@ let saveUserProfile = async () => {
         updateUserData.icon_image = $authUser.icon_image;
       }
       authUser.set(updateUserData);
-
+      closeModal();
     } catch (error) {
       console.error("データの保存中にエラーが発生しました:", error);
     }
     finally {
-      //isLoading = false;
+      editModalLoading = false;
     }
 };
 
@@ -83,6 +87,8 @@ let saveUserProfile = async () => {
           input.input.w-full.px20.rounded-30(type='text', bind:value='{userName}')
         div.f.fr
           button.button.flex-fixed.rounded-20.w128.bg-light-green.text-white(on:click!='{() => saveUserProfile()}') 保存
+    +if('editModalLoading')
+      LoadingModal(show='{true}')
 
 
 
