@@ -17,6 +17,7 @@
   let src = '/no-image.png';
 
   $: {
+    isOpenEditProfileModal;
   }
 
   let openEditProfileModal = () => {
