@@ -36,6 +36,33 @@
     logOut();
     goto('/');
   };
+  const sendEmails = async () => {
+    return ;
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: "takashiee893@yahoo.co.jp",
+          from: "fukagawatakashiee893@gmail.com",
+          subject: "Test Email",
+          text: "This is a test email sent using SendGrid.",
+          html: "<strong>This is a test email sent using SendGrid.</strong>",
+        }),
+      });
+
+      if (response.ok) {
+        alert("Email sent successfully!");
+      } else {
+        const error = await response.json();
+        alert(`Failed to send email: ${error.error}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 </script>
 <svelte:head>
 <title>About</title>
