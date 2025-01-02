@@ -32,8 +32,8 @@
     alert("share");
   };
 
-  let signOut = () => {
-    logOut();
+  let signOut = async () => {
+    await logOut();
     goto('/');
   };
 </script>
