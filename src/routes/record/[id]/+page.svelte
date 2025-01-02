@@ -119,7 +119,9 @@
   };
 
   let deleteRecord = async () => {
-    let result = confirm('本当にこのレコードを削除しますか？削除すると元には戻せません。');
+    goto('/login');
+    return ;
+    //let result = confirm('本当にこのレコードを削除しますか？削除すると元には戻せません。');
     if (!result) return ;
 
     isLoading = true;
