@@ -37,7 +37,6 @@
     goto('/');
   };
   const sendEmails = async () => {
-    return ;
     try {
       const response = await fetch("/api/send", {
         method: "POST",
@@ -85,7 +84,7 @@ div.container-960.h100vh.px20
         div.f.fr.mb18
           button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openEditProfileModal()}') プロフィール編集
         div.f.fr
-          button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openShareModal()}') 共有
+          button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => sendEmails()}') 共有
         EditProfileModal(bind:show='{isOpenEditProfileModal}')
       //- +if('isLoading')
       //-   LoadingModal(show='{true}')
