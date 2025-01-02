@@ -145,6 +145,8 @@ div.container-960.h100vh.px20
       +if('$currentUser')
         div.mt100
           h2.text-center.fs20.bold.mb20 {formattedDate(record.created_at.seconds)}のレコードです
+          button.button.relative.f.fh.rounded-30.s40.bg-white.p4.z100(on:click!='{() => deleteRecord()}')
+              img.block.s-full.object-fit-contain(src='/delete.svg')
           form.mb50(on:submit!='{(e) => insertContent(e)}')
             h3.mb12 TODO
             div.f.fm.s-flex-column
