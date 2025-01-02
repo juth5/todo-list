@@ -36,6 +36,32 @@
     await logOut();
     goto('/');
   };
+  const sendEmails = async () => {
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: "takashiee893@yahoo.co.jp",
+          from: "fukagawatakashiee893@gmail.com",
+          subject: "Test Email",
+          text: "This is a test email sent using SendGrid.",
+          html: "<strong>This is a test email sent using SendGrid.</strong>",
+        }),
+      });
+
+      if (response.ok) {
+        alert("Email sent successfully!");
+      } else {
+        const error = await response.json();
+        alert(`Failed to send email: ${error.error}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 </script>
 <svelte:head>
 <title>About</title>
@@ -58,7 +84,7 @@ div.container-960.h100vh.px20
         div.f.fr.mb18
           button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openEditProfileModal()}') プロフィール編集
         div.f.fr
-          button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openShareModal()}') 共有
+          button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => sendEmails()}') 共有
         EditProfileModal(bind:show='{isOpenEditProfileModal}')
       //- +if('isLoading')
       //-   LoadingModal(show='{true}')
