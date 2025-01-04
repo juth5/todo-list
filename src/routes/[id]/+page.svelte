@@ -49,6 +49,7 @@
           subject: "Test Email",
           text: "This is a test email sent using SendGrid.",
           html: "<strong>This is a test email sent using SendGrid.</strong>",
+          inviterId: "12345", // 招待IDを追加
         }),
       });
 

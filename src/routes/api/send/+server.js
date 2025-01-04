@@ -5,23 +5,27 @@ sgMail.setApiKey(SENDGRID_API_KEY);
 
 export const POST = async ({ request }) => {
   try {
-    const { to, from, subject, text, html } = await request.json();
+    const { to, from, subject, text, html, inviterId } = await request.json();
 
     // 必須フィールドのチェック
-    if (!to || !from || !subject || !text) {
+    if (!to || !from || !subject || !text || !inviterId) {
       return new Response(
         JSON.stringify({ error: "Missing required fields." }),
         { status: 400 }
       );
     }
 
+    //const inviteLink = `http://localhost:5173/invite?inviterId=${inviterId}&inviteeEmail=${encodeURIComponent(to)}`;
+    const inviteLink = `http://localhost:5173/invite?inviterId=${ownerUid}&inviteeEmail=${encodeURIComponent(guestEmail)}`;
+
+
     // メール送信
     const msg = {
       to,
       from,
       subject,
-      text,
-      html,
+      text: `You have been invited. Please accept the invitation by clicking this link: ${inviteLink}`,
+      html: `<p>You have been invited. Please accept the invitation by clicking this link:</p><a href="${inviteLink}">${inviteLink}</a>`,
     };
 
     await sgMail.send(msg);
