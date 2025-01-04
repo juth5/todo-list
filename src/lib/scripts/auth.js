@@ -12,12 +12,12 @@ export async function signUp(email, password, name) {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     let user = userCredential.user;
 
-    // await setDoc(doc(firebaseDb, "users", user.uid), {
-    //   email: email,
-    //   createdAt: new Date().toISOString(),
-    //   uid: user.uid,
-    //   //displayName: name,
-    // });
+    await setDoc(doc(firebaseDb, "users", user.uid), {
+      email: email,
+      createdAt: new Date().toISOString(),
+      uid: user.uid,
+      display_name: null,
+    });
     return userCredential.user;
   } catch (error) {
     console.error("Error signing up:", error);

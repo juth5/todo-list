@@ -30,7 +30,7 @@ let registerUserName = async () => {
     };
 
     // Firestoreにデータを保存
-    await setDoc(doc(firebaseDb, "users", $currentUser.uid), {
+    await updateDoc(doc(firebaseDb, "users", $currentUser.uid), {
       display_name: nameValue,
       createdAt: serverTimestamp(),
     });
