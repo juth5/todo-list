@@ -14,7 +14,7 @@
 	import LoadingModal from "../lib/modal/LoadingModal.svelte";
 	import { format, getMilliseconds } from 'date-fns';
 	import { goto } from '$app/navigation';
-	import { startOfDay, subDays, isWithinInterval } from 'date-fns';
+	import { startOfDay, subDays, isWithinInterval, isToday, isThisWeek } from 'date-fns';
 
 
 	let isOpenModal = false;
@@ -78,7 +78,7 @@
 			diaries = diaries;
 		};
 		let formattedDate = (date) => {
-			return format(new Date(date * 1000), 'yyyy-MM-dd');
+			return format(new Date(date * 1000), 'yyyy-MM-dd EEE');
 		};
 
 		let saveRecord = async (e) => {
@@ -103,6 +103,23 @@
 			const day = String(date.getDate()).padStart(2, '0');
 			return `${year}-${month}-${day}`;
 		};
+
+		let isTodayRecord = (timestamp) => {
+			// UNIXタイムスタンプ（秒）をミリ秒に変換
+			const date = new Date(timestamp * 1000);
+			// 本日であるかを判定
+			return isToday(date);
+		};
+
+		const isTodayOrThisWeek = (timestamp) => {
+			// UNIXタイムスタンプ（秒）をミリ秒に変換
+			const date = new Date(timestamp * 1000);
+
+			// 今週かどうかを判定（オプションで曜日開始を変更可能）
+			const thisWeek = isThisWeek(date, { weekStartsOn: 1 }); // 週の始まりを月曜日に設定
+			return thisWeek;
+		};
+
 
 		let getPendingTodoCount = (todo) => {
 			let pending_todo_count = todo.filter(td => td.isChecked);
@@ -160,8 +177,8 @@
 						div.mb30
 							+if('records && records.length')
 								+each('records as record, index')
-									a.f.fm.fbw.p10.lh20.border-bottom.hover-list.hover-text-decoration-none.s-px0(href='/record/{record.id}')
-										div {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
+									a.f.fm.fbw.p10.lh20.border-bottom.hover-list.hover-text-decoration-none.s-px0(href='/record/{record.id}', class!='{isTodayRecord(record.data.created_at.seconds) ? "bg-light-yellow" : ""}')
+										div(class!='{isTodayOrThisWeek(record.data.created_at.seconds) ? "bold" : ""}') {index + 1}. {formattedDate(record.data.created_at.seconds)}のレコード
 										+if('record.data.todo && record.data.todo.length')
 											div {getIcon(record)} {getPendingTodoCount(record.data.todo)}/{record.data.todo.length} 完了
 					+if('isOpenModal')

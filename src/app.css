@@ -140,7 +140,9 @@ button:focus:not(:focus-visible) {
 .bg-light-green  {
 	background-color: #00b379 !important;
 }
-
+.bg-light-yellow  {
+	background-color: #FFFCDB !important;
+}
 .hover-list:hover {
 	background-color: #d4edda;
 }
