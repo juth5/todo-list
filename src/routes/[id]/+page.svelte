@@ -12,7 +12,10 @@
   import { goto } from '$app/navigation';
   import EditProfileModal from "$lib/modal/EditProfileModal.svelte";
 
-  $: ({ user, userId } = $page.data);
+  $: ({ user, userId, ownerData } = $page.data);
+  $: {
+    console.log(user, userId, ownerData,'aaaaaaaaa')
+  }
   let isOpenEditProfileModal = false;
   let src = '/no-image.png';
 
@@ -36,6 +39,36 @@
     await logOut();
     goto('/');
   };
+  const sendEmails = async () => {
+    try {
+      const response = await fetch("/api/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: "takashiee893@yahoo.co.jp",
+          from: "fukagawatakashiee893@gmail.com",
+          subject: "Test Email",
+          text: "This is a test email sent using SendGrid.",
+          html: "<strong>This is a test email sent using SendGrid.</strong>",
+          ownerUid: $currentUser.uid, // 招待IDを追加
+        }),
+      });
+
+      if (response.ok) {
+        alert("Email sent successfully!");
+      } else {
+        const error = await response.json();
+        alert(`Failed to send email: ${error.error}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  let openRecordModal = (owner) => {
+    console.log(owner.uid,'www')
+  };
 </script>
 <svelte:head>
 <title>About</title>
@@ -57,8 +90,13 @@ div.container-960.h100vh.px20
           div.fs20 {$authUser.display_name}
         div.f.fr.mb18
           button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openEditProfileModal()}') プロフィール編集
-        div.f.fr
-          button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => openShareModal()}') 共有
+        div.f.fr.mb24
+          button.button.flex-fixed.rounded-20.w150.bg-light-green.text-white(on:click!='{() => sendEmails()}') 共有する
+        h2.text-center.fs20.bold.mb20 共有されているユーザー
+        +if('ownerData.length')
+          +each('ownerData as owner')
+            div(on:click!='{() => openRecordModal(owner)}') {owner.display_name}
+
         EditProfileModal(bind:show='{isOpenEditProfileModal}')
       //- +if('isLoading')
       //-   LoadingModal(show='{true}')
